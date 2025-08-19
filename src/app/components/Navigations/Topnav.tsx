@@ -16,13 +16,15 @@ import { ModeToggle } from "./Modetoggle";
 
 interface NavBarProps {
   className?: string;
+  onMenuClick?: () => void;
 }
 
-const NavBar: React.FC<NavBarProps> = ({ className }) => {
+const NavBar: React.FC<NavBarProps> = ({ className, onMenuClick }) => {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [showAITip, setShowAITip] = useState(true);
   const [searchValue, setSearchValue] = useState("");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  // Remove local sidebar state since it's now managed in the parent component
 
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode);
@@ -38,10 +40,14 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
 
   return (
     <>
-      <nav className={cn(
-        "bg-background/95 backdrop-blur-sm border-b border-border text-foreground px-6 py-4 shadow-sm w-full flex-shrink-0",
-        className
-      )}>
+      <nav
+        className={cn(
+          "bg-background/95 backdrop-blur-sm border-b border-border text-foreground px-6 py-3 shadow-sm w-full flex-shrink-0",
+          className
+        )}
+      >
+        {/* Mobile menu button */}
+      
         {/* Desktop Layout */}
         <div className="hidden lg:flex items-center">
           {/* Left Section - Search */}
@@ -60,8 +66,6 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
 
           {/* Center Section - Efficiency & AI Tip */}
           <div className="flex items-center justify-center space-x-4 w-1/3 px-4">
-         
-
             {showAITip && (
               <div className="relative bg-gradient-to-r from-card to-card/80 border border-border/60 rounded-lg px-4 py-2 max-w-sm shadow-sm backdrop-blur-sm">
                 <button
@@ -73,11 +77,14 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
                 <div className="flex items-start space-x-2">
                   <Lightbulb className="w-4 h-4 text-orange-500 dark:text-orange-400 mt-0.5 flex-shrink-0" />
                   <div className="text-xs">
-                    <span className="text-orange-500 dark:text-orange-400 font-medium">AI Tip:</span>
+                    <span className="text-orange-500 dark:text-orange-400 font-medium">
+                      AI Tip:
+                    </span>
                     <span className="text-muted-foreground">
                       {" "}
-                      Use the 2-minute rule: if a task takes less than 2 minutes, do
-                      it immediately instead of adding it to your list.
+                      Use the 2-minute rule: if a task takes less than 2
+                      minutes, do it immediately instead of adding it to your
+                      list.
                     </span>
                   </div>
                 </div>
@@ -87,14 +94,14 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
 
           {/* Right Section - Controls */}
           <div className="flex items-center justify-end space-x-3 w-1/3">
-       
-
             <ModeToggle />
 
             <button className="relative p-2 rounded-lg bg-secondary/60 hover:bg-secondary/80 transition-all duration-200 shadow-sm hover:shadow-md">
               <Bell className="w-4 h-4 text-muted-foreground" />
               <span className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-primary to-primary/80 rounded-full flex items-center justify-center shadow-sm">
-                <span className="text-xs text-primary-foreground font-bold">1</span>
+                <span className="text-xs text-primary-foreground font-bold">
+                  1
+                </span>
               </span>
             </button>
 
@@ -124,7 +131,9 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
           <div className="flex items-center space-x-3">
             <div className="flex items-center space-x-2 bg-gradient-to-r from-secondary/70 to-secondary/50 rounded-lg px-3 py-2 shadow-sm border border-border/30">
               <Settings className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium text-foreground">Efficiency</span>
+              <span className="text-sm font-medium text-foreground">
+                Efficiency
+              </span>
             </div>
           </div>
 
@@ -137,12 +146,18 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
               onClick={toggleDarkMode}
               className="p-2 rounded-lg bg-secondary/60 hover:bg-secondary/80 transition-all duration-200 shadow-sm hover:shadow-md"
             >
-              {isDarkMode ? <Sun className="w-4 h-4 text-muted-foreground" /> : <Moon className="w-4 h-4 text-muted-foreground" />}
+              {isDarkMode ? (
+                <Sun className="w-4 h-4 text-muted-foreground" />
+              ) : (
+                <Moon className="w-4 h-4 text-muted-foreground" />
+              )}
             </button>
             <button className="relative p-2 rounded-lg bg-secondary/60 hover:bg-secondary/80 transition-all duration-200 shadow-sm hover:shadow-md">
               <Bell className="w-4 h-4 text-muted-foreground" />
               <span className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-primary to-primary/80 rounded-full shadow-sm">
-                <span className="text-xs text-primary-foreground font-bold flex items-center justify-center h-full">1</span>
+                <span className="text-xs text-primary-foreground font-bold flex items-center justify-center h-full">
+                  1
+                </span>
               </span>
             </button>
             <button className="p-2 rounded-lg bg-secondary/60 hover:bg-secondary/80 transition-all duration-200 shadow-sm hover:shadow-md">
@@ -154,17 +169,28 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
         {/* Mobile Layout */}
         <div className="flex md:hidden items-center justify-between">
           {/* Left - Menu button */}
+
           <button
-            onClick={toggleMobileMenu}
-            className="p-2 rounded-lg bg-secondary/60 hover:bg-secondary/80 transition-all duration-200 shadow-sm hover:shadow-md"
-          >
-            {isMobileMenuOpen ? <X className="w-5 h-5 text-muted-foreground" /> : <Menu className="w-5 h-5 text-muted-foreground" />}
-          </button>
+          onClick={onMenuClick}
+          className="lg:hidden p-2 mr-2 rounded-md hover:bg-accent"
+          aria-label="Open menu"
+        >
+          <Menu className="h-5 w-5" />
+        </button>
+
 
           {/* Center - Logo/Brand */}
           <div className="flex items-center space-x-2">
-            <Settings className="w-5 h-5 text-primary" />
-            <span className="text-lg font-semibold text-foreground">App</span>
+            <button
+              onClick={toggleMobileMenu}
+              className="p-2 rounded-lg bg-secondary/60 hover:bg-secondary/80 transition-all duration-200 shadow-sm hover:shadow-md"
+            >
+              {isMobileMenuOpen ? (
+                <X className="w-5 h-5 text-muted-foreground" />
+              ) : (
+                <Menu className="w-5 h-5 text-muted-foreground" />
+              )}
+            </button>
           </div>
 
           {/* Right - Essential controls */}
@@ -172,7 +198,9 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
             <button className="relative p-2 rounded-lg bg-secondary/60 hover:bg-secondary/80 transition-all duration-200 shadow-sm hover:shadow-md">
               <Bell className="w-4 h-4 text-muted-foreground" />
               <span className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-primary to-primary/80 rounded-full shadow-sm">
-                <span className="text-xs text-primary-foreground font-bold flex items-center justify-center h-full">1</span>
+                <span className="text-xs text-primary-foreground font-bold flex items-center justify-center h-full">
+                  1
+                </span>
               </span>
             </button>
             <button className="p-2 rounded-lg bg-secondary/60 hover:bg-secondary/80 transition-all duration-200 shadow-sm hover:shadow-md">
@@ -199,11 +227,8 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
 
           {/* Controls */}
           <div className="flex items-center justify-between">
-          
-
             <div className="flex items-center space-x-2">
-            
-            <ModeToggle />
+              <ModeToggle />
             </div>
           </div>
 
@@ -219,11 +244,13 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
               <div className="flex items-start space-x-2 pr-6">
                 <Lightbulb className="w-4 h-4 text-orange-500 dark:text-orange-400 mt-0.5 flex-shrink-0" />
                 <div className="text-sm">
-                  <span className="text-orange-500 dark:text-orange-400 font-medium">AI Tip:</span>
+                  <span className="text-orange-500 dark:text-orange-400 font-medium">
+                    AI Tip:
+                  </span>
                   <span className="text-muted-foreground">
                     {" "}
-                    Use the 2-minute rule: if a task takes less than 2 minutes, do
-                    it immediately instead of adding it to your list.
+                    Use the 2-minute rule: if a task takes less than 2 minutes,
+                    do it immediately instead of adding it to your list.
                   </span>
                 </div>
               </div>
