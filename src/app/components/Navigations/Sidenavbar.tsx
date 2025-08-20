@@ -1,6 +1,8 @@
 import React from 'react';
 import { LayoutDashboard, Calendar, BarChart3, Settings, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 interface SidenavbarProps {
   className?: string;
@@ -9,11 +11,13 @@ interface SidenavbarProps {
 }
 
 const Sidenavbar: React.FC<SidenavbarProps> = ({ className, isOpen = true, onClose }) => {
+  const pathname = usePathname();
+  
   const menuItems = [
-    { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { id: "calendar", label: "Calendar", icon: Calendar },
-    { id: "insights", label: "Insights", icon: BarChart3 },
-    { id: "settings", label: "Settings", icon: Settings },
+    { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, href: "/Dashboard" },
+    { id: "calendar", label: "Calendar", icon: Calendar, href: "/calender" },
+    { id: "insights", label: "Insights", icon: BarChart3, href: "/Insights" },
+    { id: "settings", label: "Settings", icon: Settings, href: "/settings" },
   ];
 
   return (
@@ -38,15 +42,29 @@ const Sidenavbar: React.FC<SidenavbarProps> = ({ className, isOpen = true, onClo
         <ul className="space-y-1">
           {menuItems.map((item) => {
             const Icon = item.icon;
+            const isActive = pathname === item.href || 
+                          (pathname === '/' && item.href === '/dashboard');
             return (
               <li key={item.id}>
-                <a
-                  href={`#${item.id}`}
-                  className="flex items-center px-4 py-3 text-sm font-medium rounded-lg text-foreground hover:bg-accent hover:text-accent-foreground transition-all duration-200 group"
+                <Link
+                  href={item.href}
+                  className={cn(
+                    "flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 group",
+                    isActive 
+                      ? "bg-accent text-accent-foreground"
+                      : "text-foreground hover:bg-accent hover:text-accent-foreground"
+                  )}
                 >
-                  <Icon className="mr-3 h-5 w-5 text-muted-foreground group-hover:text-accent-foreground" />
+                  <Icon 
+                    className={cn(
+                      "mr-3 h-5 w-5 transition-colors",
+                      isActive 
+                        ? "text-accent-foreground" 
+                        : "text-muted-foreground group-hover:text-accent-foreground"
+                    )} 
+                  />
                   <span>{item.label}</span>
-                </a>
+                </Link>
               </li>
             );
           })}

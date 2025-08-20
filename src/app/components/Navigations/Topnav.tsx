@@ -24,7 +24,7 @@ const NavBar: React.FC<NavBarProps> = ({ className, onMenuClick }) => {
   const [showAITip, setShowAITip] = useState(true);
   const [searchValue, setSearchValue] = useState("");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  // Remove local sidebar state since it's now managed in the parent component
+
 
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode);
@@ -46,8 +46,8 @@ const NavBar: React.FC<NavBarProps> = ({ className, onMenuClick }) => {
           className
         )}
       >
-        {/* Mobile menu button */}
-      
+  
+
         {/* Desktop Layout */}
         <div className="hidden lg:flex items-center">
           {/* Left Section - Search */}
@@ -171,15 +171,14 @@ const NavBar: React.FC<NavBarProps> = ({ className, onMenuClick }) => {
           {/* Left - Menu button */}
 
           <button
-          onClick={onMenuClick}
-          className="lg:hidden p-2 mr-2 rounded-md hover:bg-accent"
-          aria-label="Open menu"
-        >
-          <Menu className="h-5 w-5" />
-        </button>
+            onClick={onMenuClick}
+            className="lg:hidden p-2 mr-2 rounded-md hover:bg-accent"
+            aria-label="Open menu"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
 
-
-          {/* Center - Logo/Brand */}
+          {/* Center  */}
           <div className="flex items-center space-x-2">
             <button
               onClick={toggleMobileMenu}
