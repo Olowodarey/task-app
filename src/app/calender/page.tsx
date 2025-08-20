@@ -54,22 +54,33 @@ export default function CalendarPage() {
 
 
   const [windowWidth, setWindowWidth] = useState<number | null>(null);
+  const [isClient, setIsClient] = useState(false);
 
-useEffect(() => {
-  const handleResize = () => setWindowWidth(window.innerWidth);
-  handleResize(); // set initial
-  window.addEventListener("resize", handleResize);
-  return () => window.removeEventListener("resize", handleResize);
-}, []);
+  // Set isClient to true when component mounts (client-side only)
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // Handle window resize
+  useEffect(() => {
+    if (!isClient) return;
+    
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    handleResize(); // set initial
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [isClient]);
 
   // Initialize theme from localStorage or system preference
   useEffect(() => {
+    if (!isClient) return;
+    
     const savedTheme = localStorage.getItem("theme");
     const systemPrefersDark = window.matchMedia(
       "(prefers-color-scheme: dark)"
     ).matches;
     setIsDarkMode(savedTheme ? savedTheme === "dark" : systemPrefersDark);
-  }, []);
+  }, [isClient]);
 
   // Apply theme to document
   useEffect(() => {
@@ -152,7 +163,7 @@ useEffect(() => {
   const handleDateClick = (date: Date) => {
     setSelectedDate(date);
     // Auto-open right sidebar on mobile when date is selected
-    if (window.innerWidth < 1024) {
+    if (isClient && window.innerWidth < 1024) {
       setIsRightSidebarOpen(true);
     }
   };
@@ -355,27 +366,27 @@ useEffect(() => {
         {/* Calendar Grid */}
         <div className="flex-1 overflow-auto p-3 lg:p-6">
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-2 sm:p-4 lg:p-6 h-full transition-colors duration-200">
-          <FullCalendar
-  plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-  initialView="dayGridMonth"
-  headerToolbar={{
-    left: "prev,next today",
-    center: "title",
-    right:
-      windowWidth && windowWidth < 768
-        ? "dayGridMonth"
-        : "dayGridMonth,timeGridWeek,timeGridDay",
-  }}
-  selectable={true}
-  select={handleDateSelect}
-  events={events}
-  eventClick={handleEventClick}
-  height="100%"
-  nowIndicator={true}
-  dayMaxEvents={windowWidth && windowWidth < 768 ? 2 : 3}
-  dayMaxEventRows={windowWidth && windowWidth < 768 ? 2 : 3}
-/>
-
+            {isClient && (
+              <FullCalendar
+                plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                initialView="dayGridMonth"
+                headerToolbar={{
+                  left: "prev,next today",
+                  center: "title",
+                  right: windowWidth && windowWidth < 768
+                    ? "dayGridMonth"
+                    : "dayGridMonth,timeGridWeek,timeGridDay",
+                }}
+                selectable={true}
+                select={handleDateSelect}
+                events={events}
+                eventClick={handleEventClick}
+                height="100%"
+                nowIndicator={true}
+                dayMaxEvents={windowWidth && windowWidth < 768 ? 2 : 3}
+                dayMaxEventRows={windowWidth && windowWidth < 768 ? 2 : 3}
+              />
+            )}
           </div>
         </div>
       </div>
@@ -392,7 +403,7 @@ useEffect(() => {
             ? "translate-x-0"
             : "translate-x-full lg:translate-x-0"
         }
-        ${window.innerWidth < 1024 ? "block" : "hidden xl:block"}
+        ${isClient && window.innerWidth < 1024 ? "block" : "hidden xl:block"}
       `}
       >
         <div className="p-4 lg:p-6">
