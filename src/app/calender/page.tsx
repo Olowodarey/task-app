@@ -10,8 +10,7 @@ import {
   FiPlus,
   FiFilter,
   FiSearch,
-  FiSun,
-  FiMoon,
+ 
   FiMenu,
   FiX,
 } from "react-icons/fi";
@@ -52,6 +51,16 @@ export default function CalendarPage() {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false);
+
+
+  const [windowWidth, setWindowWidth] = useState<number | null>(null);
+
+useEffect(() => {
+  const handleResize = () => setWindowWidth(window.innerWidth);
+  handleResize(); // set initial
+  window.addEventListener("resize", handleResize);
+  return () => window.removeEventListener("resize", handleResize);
+}, []);
 
   // Initialize theme from localStorage or system preference
   useEffect(() => {
@@ -340,52 +349,33 @@ export default function CalendarPage() {
             </div>
           </div>
 
-          {/* Mini Calendar - Desktop Only */}
+       
         </div>
 
         {/* Calendar Grid */}
         <div className="flex-1 overflow-auto p-3 lg:p-6">
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-2 sm:p-4 lg:p-6 h-full transition-colors duration-200">
-            <FullCalendar
-              plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-              initialView="dayGridMonth"
-              headerToolbar={{
-                left: "prev,next today",
-                center: "title",
-                right:
-                  window.innerWidth < 768
-                    ? "dayGridMonth"
-                    : "dayGridMonth,timeGridWeek,timeGridDay",
-              }}
-              selectable={true}
-              select={handleDateSelect}
-              events={events}
-              eventClick={handleEventClick}
-              eventContent={(eventInfo) => (
-                <div className="p-0.5 sm:p-1">
-                  <div
-                    className={`p-1 sm:p-2 rounded-lg text-xs sm:text-sm ${
-                      eventInfo.event.extendedProps.category === "Work"
-                        ? "bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 border-l-2 sm:border-l-4 border-blue-500"
-                        : eventInfo.event.extendedProps.category === "Personal"
-                        ? "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-l-2 sm:border-l-4 border-green-500"
-                        : "bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border-l-2 sm:border-l-4 border-red-500"
-                    }`}
-                  >
-                    <div className="font-medium truncate">
-                      {eventInfo.event.title}
-                    </div>
-                    <div className="text-xs opacity-75 hidden sm:block">
-                      {eventInfo.timeText}
-                    </div>
-                  </div>
-                </div>
-              )}
-              height="100%"
-              nowIndicator={true}
-              dayMaxEvents={window.innerWidth < 768 ? 2 : 3}
-              dayMaxEventRows={window.innerWidth < 768 ? 2 : 3}
-            />
+          <FullCalendar
+  plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+  initialView="dayGridMonth"
+  headerToolbar={{
+    left: "prev,next today",
+    center: "title",
+    right:
+      windowWidth && windowWidth < 768
+        ? "dayGridMonth"
+        : "dayGridMonth,timeGridWeek,timeGridDay",
+  }}
+  selectable={true}
+  select={handleDateSelect}
+  events={events}
+  eventClick={handleEventClick}
+  height="100%"
+  nowIndicator={true}
+  dayMaxEvents={windowWidth && windowWidth < 768 ? 2 : 3}
+  dayMaxEventRows={windowWidth && windowWidth < 768 ? 2 : 3}
+/>
+
           </div>
         </div>
       </div>
