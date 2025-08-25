@@ -7,12 +7,10 @@ import {
   Lightbulb,
   Bell,
   User,
-  Sun,
-  Moon,
   Menu,
   X,
 } from "lucide-react";
-import { ModeToggle } from "./Modetoggle";
+
 
 interface NavBarProps {
   className?: string;
@@ -20,15 +18,9 @@ interface NavBarProps {
 }
 
 const NavBar: React.FC<NavBarProps> = ({ className, onMenuClick }) => {
-  const [isDarkMode, setIsDarkMode] = useState(true);
   const [showAITip, setShowAITip] = useState(true);
   const [searchValue, setSearchValue] = useState("");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-
-  const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
-  };
 
   const dismissAITip = () => {
     setShowAITip(false);
@@ -94,7 +86,6 @@ const NavBar: React.FC<NavBarProps> = ({ className, onMenuClick }) => {
 
           {/* Right Section - Controls */}
           <div className="flex items-center justify-end space-x-3 w-1/3">
-            <ModeToggle />
 
             <button className="relative p-2 rounded-lg bg-secondary/60 hover:bg-secondary/80 transition-all duration-200 shadow-sm hover:shadow-md">
               <Bell className="w-4 h-4 text-muted-foreground" />
@@ -142,16 +133,7 @@ const NavBar: React.FC<NavBarProps> = ({ className, onMenuClick }) => {
             <button className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-2 py-1 rounded text-xs font-medium transition-all duration-200 shadow-sm hover:shadow-md">
               Demo
             </button>
-            <button
-              onClick={toggleDarkMode}
-              className="p-2 rounded-lg bg-secondary/60 hover:bg-secondary/80 transition-all duration-200 shadow-sm hover:shadow-md"
-            >
-              {isDarkMode ? (
-                <Sun className="w-4 h-4 text-muted-foreground" />
-              ) : (
-                <Moon className="w-4 h-4 text-muted-foreground" />
-              )}
-            </button>
+
             <button className="relative p-2 rounded-lg bg-secondary/60 hover:bg-secondary/80 transition-all duration-200 shadow-sm hover:shadow-md">
               <Bell className="w-4 h-4 text-muted-foreground" />
               <span className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-primary to-primary/80 rounded-full shadow-sm">
@@ -227,7 +209,6 @@ const NavBar: React.FC<NavBarProps> = ({ className, onMenuClick }) => {
           {/* Controls */}
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <ModeToggle />
             </div>
           </div>
 

@@ -6,14 +6,7 @@ import { DateSelectArg, EventClickArg } from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import {
-  FiPlus,
-  FiFilter,
-  FiSearch,
- 
-  FiMenu,
-  FiX,
-} from "react-icons/fi";
+import { FiPlus, FiFilter, FiSearch, FiMenu, FiX } from "react-icons/fi";
 
 type TaskCategory = "Work" | "Personal" | "Urgent";
 
@@ -48,11 +41,8 @@ export default function CalendarPage() {
   ]);
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false);
-
-
   const [windowWidth, setWindowWidth] = useState<number | null>(null);
   const [isClient, setIsClient] = useState(false);
 
@@ -64,38 +54,14 @@ export default function CalendarPage() {
   // Handle window resize
   useEffect(() => {
     if (!isClient) return;
-    
+
     const handleResize = () => setWindowWidth(window.innerWidth);
     handleResize(); // set initial
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, [isClient]);
 
-  // Initialize theme from localStorage or system preference
-  useEffect(() => {
-    if (!isClient) return;
-    
-    const savedTheme = localStorage.getItem("theme");
-    const systemPrefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    ).matches;
-    setIsDarkMode(savedTheme ? savedTheme === "dark" : systemPrefersDark);
-  }, [isClient]);
 
-  // Apply theme to document
-  useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  }, [isDarkMode]);
-
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
-  };
 
   const toggleMobileSidebar = () => {
     setIsMobileSidebarOpen(!isMobileSidebarOpen);
@@ -191,11 +157,11 @@ export default function CalendarPage() {
   });
 
   return (
-    <div className="flex h-screen  bg-gray-100 dark:bg-gray-900 transition-colors duration-200 relative">
+    <div className="flex h-screen bg-background transition-colors duration-200 relative">
       {/* Mobile Overlay */}
       {(isMobileSidebarOpen || isRightSidebarOpen) && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40 lg:hidden"
           onClick={() => {
             setIsMobileSidebarOpen(false);
             setIsRightSidebarOpen(false);
@@ -208,7 +174,7 @@ export default function CalendarPage() {
         className={`
         fixed lg:relative inset-y-0 left-0 z-50 lg:z-0
         w-64 sm:w-72 lg:w-64 xl:w-72
-        bg-white dark:bg-gray-800 shadow-lg
+        bg-background shadow-lg border-r border-border
         transform transition-transform duration-300 ease-in-out
         ${
           isMobileSidebarOpen
@@ -220,19 +186,18 @@ export default function CalendarPage() {
         <div className="p-4 lg:p-6">
           {/* Header */}
           <div className="flex items-center justify-between mb-6 lg:mb-8">
-            <h1 className="text-xl lg:text-2xl font-bold text-gray-800 dark:text-white">
+            <h1 className="text-xl lg:text-2xl font-bold text-foreground">
               Calendar
             </h1>
             <div className="flex items-center space-x-2">
-             
-              <button className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
-                <FiPlus className="text-gray-600 dark:text-gray-300 w-5 h-5" />
+              <button className="p-2 rounded-full hover:bg-accent transition-colors duration-200">
+                <FiPlus className="text-foreground/80 w-5 h-5" />
               </button>
               <button
                 onClick={toggleMobileSidebar}
                 className="lg:hidden p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
               >
-                <FiX className="text-gray-600 dark:text-gray-300 w-5 h-5" />
+                <FiX className="text-foreground/80 w-5 h-5" />
               </button>
             </div>
           </div>
@@ -240,10 +205,10 @@ export default function CalendarPage() {
           {/* My Calendars */}
           <div className="mb-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-base lg:text-lg font-semibold text-gray-700 dark:text-gray-300">
+              <h2 className="text-base lg:text-lg font-semibold text-foreground/90">
                 My Calendars
               </h2>
-              <FiPlus className="text-gray-400 dark:text-gray-500 w-4 h-4" />
+              <FiPlus className="text-foreground/50 w-4 h-4" />
             </div>
             <div className="space-y-2">
               {["Work", "Personal", "Urgent"].map((category) => (
@@ -257,7 +222,7 @@ export default function CalendarPage() {
                         : "bg-red-500"
                     }`}
                   />
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                  <span className="text-sm text-foreground/80">
                     {category}
                   </span>
                 </div>
@@ -267,14 +232,14 @@ export default function CalendarPage() {
 
           {/* Upcoming Events */}
           <div className="mt-6 lg:mt-8">
-            <h2 className="text-base lg:text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">
+            <h2 className="text-base lg:text-lg font-semibold text-foreground/90 mb-4">
               Upcoming Events
             </h2>
             <div className="space-y-3 lg:space-y-4">
               {events.slice(0, 3).map((event) => (
                 <div
                   key={event.id}
-                  className="p-3 bg-white dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 shadow-sm transition-colors duration-200"
+                  className="p-3 rounded-lg border border-border shadow-sm transition-colors duration-200 bg-card"
                 >
                   <div className="flex items-start">
                     <div
@@ -287,10 +252,10 @@ export default function CalendarPage() {
                       }`}
                     />
                     <div className="ml-3">
-                      <h3 className="text-sm font-medium text-gray-800 dark:text-white">
+                      <h3 className="text-sm font-medium text-foreground">
                         {event.title}
                       </h3>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                      <p className="text-xs text-muted-foreground">
                         {new Date(event.start).toLocaleTimeString([], {
                           hour: "2-digit",
                           minute: "2-digit",
@@ -308,29 +273,29 @@ export default function CalendarPage() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Mobile Header */}
-        <div className="lg:hidden bg-white dark:bg-gray-800 p-4 shadow-md flex items-center justify-between">
+        <div className="lg:hidden bg-background p-4 border-b border-border flex items-center justify-between">
           <button
             onClick={toggleMobileSidebar}
-            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+            className="p-2 rounded-lg hover:bg-accent transition-colors duration-200"
           >
-            <FiMenu className="text-gray-600 dark:text-gray-300 w-5 h-5" />
+            <FiMenu className="text-foreground/80 w-5 h-5" />
           </button>
-          <h1 className="text-lg font-semibold text-gray-800 dark:text-white">
+          <h1 className="text-lg font-semibold text-foreground">
             {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
           </h1>
           <button
             onClick={toggleRightSidebar}
-            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+            className="p-2 rounded-lg hover:bg-accent transition-colors duration-200"
           >
-            <FiPlus className="text-gray-600 dark:text-gray-300 w-5 h-5" />
+            <FiPlus className="text-foreground/80 w-5 h-5" />
           </button>
         </div>
 
         {/* Desktop Header */}
-        <div className="hidden lg:block bg-white dark:bg-gray-800 p-6 shadow-md transition-colors duration-200">
+        <div className="hidden lg:block bg-background p-6 border-b border-border transition-colors duration-200">
           <div className="flex flex-col xl:flex-row xl:justify-between xl:items-center mb-6 space-y-4 xl:space-y-0">
             <div>
-              <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
+              <h1 className="text-2xl font-bold text-foreground">
                 {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
               </h1>
               <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -345,27 +310,25 @@ export default function CalendarPage() {
                 <input
                   type="text"
                   placeholder="Search events..."
-                  className="w-full sm:w-64 pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                  className="w-full sm:w-64 pl-10 pr-4 py-2 border border-input rounded-lg bg-background text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background transition-colors duration-200"
                 />
               </div>
               <div className="flex space-x-2">
-                <button className="flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors duration-200 text-sm">
+                <button className="flex items-center px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg transition-colors duration-200 text-sm">
                   <FiPlus className="mr-2 w-4 h-4" />
                   <span className="hidden sm:inline">Add Event</span>
                 </button>
-                <button className="p-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
-                  <FiFilter className="text-gray-500 dark:text-gray-400 w-4 h-4" />
+                <button className="p-2 rounded-lg border border-input hover:bg-accent transition-colors duration-200">
+                  <FiFilter className="text-foreground/70 w-4 h-4" />
                 </button>
               </div>
             </div>
           </div>
-
-       
         </div>
 
         {/* Calendar Grid */}
         <div className="flex-1 overflow-auto p-3 lg:p-6">
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-2 sm:p-4 lg:p-6 h-full transition-colors duration-200">
+          <div className="bg-background rounded-xl border border-border p-2 sm:p-4 lg:p-6 h-full transition-colors duration-200">
             {isClient && (
               <FullCalendar
                 plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -373,9 +336,10 @@ export default function CalendarPage() {
                 headerToolbar={{
                   left: "prev,next today",
                   center: "title",
-                  right: windowWidth && windowWidth < 768
-                    ? "dayGridMonth"
-                    : "dayGridMonth,timeGridWeek,timeGridDay",
+                  right:
+                    windowWidth && windowWidth < 768
+                      ? "dayGridMonth"
+                      : "dayGridMonth,timeGridWeek,timeGridDay",
                 }}
                 selectable={true}
                 select={handleDateSelect}
@@ -396,7 +360,7 @@ export default function CalendarPage() {
         className={`
         fixed lg:relative inset-y-0 right-0 z-50 lg:z-0
         w-72 sm:w-80 lg:w-80 xl:w-96
-        bg-white dark:bg-gray-800 shadow-lg overflow-y-auto
+        bg-background shadow-lg border-l border-border overflow-y-auto
         transform transition-transform duration-300 ease-in-out
         ${
           isRightSidebarOpen
@@ -408,14 +372,14 @@ export default function CalendarPage() {
       >
         <div className="p-4 lg:p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-base lg:text-lg font-semibold text-gray-700 dark:text-gray-300">
+            <h2 className="text-base lg:text-lg font-semibold text-foreground/90">
               {selectedDate ? selectedDate.toDateString() : "Today"}'s Events
             </h2>
             <button
               onClick={toggleRightSidebar}
               className="lg:hidden p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
             >
-              <FiX className="text-gray-600 dark:text-gray-300 w-5 h-5" />
+              <FiX className="text-foreground/80 w-5 h-5" />
             </button>
           </div>
 
@@ -424,32 +388,32 @@ export default function CalendarPage() {
               {todayEvents.map((event) => (
                 <div
                   key={event.id}
-                  className={`p-3 sm:p-4 rounded-lg transition-colors duration-200 ${
+                  className={`p-3 sm:p-4 rounded-lg transition-colors duration-200 bg-card ${
                     event.category === "Work"
-                      ? "bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500"
+                      ? "border-l-4 border-blue-500"
                       : event.category === "Personal"
-                      ? "bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500"
-                      : "bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500"
+                      ? "border-l-4 border-green-500"
+                      : "border-l-4 border-red-500"
                   }`}
                 >
                   <div className="flex justify-between items-start">
                     <div>
-                      <h3 className="font-medium text-gray-800 dark:text-white text-sm lg:text-base">
+                      <h3 className="font-medium text-foreground text-sm lg:text-base">
                         {event.title}
                       </h3>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                      <p className="text-sm text-muted-foreground">
                         {new Date(event.start).toLocaleTimeString([], {
                           hour: "2-digit",
                           minute: "2-digit",
                         })}
                       </p>
                     </div>
-                    <button className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200 p-1">
+                    <button className="text-foreground/50 hover:text-foreground transition-colors duration-200 p-1">
                       <FiPlus className="transform rotate-45 w-4 h-4" />
                     </button>
                   </div>
                   {event.completed && (
-                    <div className="mt-2 text-xs text-green-600 dark:text-green-400 font-medium">
+                    <div className="mt-2 text-xs text-green-500 font-medium">
                       ✓ Completed
                     </div>
                   )}
@@ -457,7 +421,7 @@ export default function CalendarPage() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+            <div className="text-center py-8 text-muted-foreground">
               <p className="text-sm">
                 No events scheduled for {selectedDate ? "this day" : "today"}
               </p>

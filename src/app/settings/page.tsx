@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { User, Palette, Bot, Mic, Bell, Shield, Menu, X } from 'lucide-react';
 import { ProfileSettings } from './components/ProfileSettings';
-import { AppearanceSettings } from './components/AppearanceSettings';
 import { AIIntegrationSettings } from './components/AIIntegrationSettings';
 import { VoiceCommandsSettings } from './components/VoiceCommandsSettings';
 import { NotificationsSettings } from './components/NotificationsSettings';
@@ -21,7 +20,6 @@ const SettingsPage: React.FC = () => {
 
   const sidebarItems: SidebarItem[] = [
     { id: 'profile', label: 'Profile', icon: <User size={20} /> },
-    { id: 'appearance', label: 'Appearance', icon: <Palette size={20} /> },
     { id: 'ai-integration', label: 'AI Integration', icon: <Bot size={20} /> },
     { id: 'voice-commands', label: 'Voice Commands', icon: <Mic size={20} /> },
     { id: 'notifications', label: 'Notifications', icon: <Bell size={20} /> },
@@ -37,8 +35,6 @@ const SettingsPage: React.FC = () => {
     switch (activeSection) {
       case 'profile':
         return <ProfileSettings />;
-      case 'appearance':
-        return <AppearanceSettings />;
       case 'ai-integration':
         return <AIIntegrationSettings />;
       case 'voice-commands':
